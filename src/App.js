@@ -1,4 +1,5 @@
 import React from 'react';
+import uuidv4 from 'uuid/v4';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Header from './components/Header';
@@ -7,7 +8,6 @@ import AddPostForm from './components/AddPostForm';
 import Posts from './components/Posts';
 
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
 
@@ -22,10 +22,15 @@ class App extends React.Component {
   addNewPost = (title, body) => {
     if (title.length === 0 || body.length === 0) return;
     var newPost = {
+      id: uuidv4(),
       title, 
       body
     };
     this.setState( {posts: [...this.state.posts, newPost]} );
+  }
+
+  deletePost = (id) => {
+    this.setState( { posts: [...this.state.posts.filter(post => post.id !== id)] } );
   }
 
   render() {
@@ -36,7 +41,7 @@ class App extends React.Component {
           <Route exact path="/" render={props => (
             <React.Fragment>
               <AddPostForm addNewPost={this.addNewPost} />
-              <Posts posts={this.state.posts} />
+              <Posts posts={this.state.posts} deletePost={this.deletePost} />
             </React.Fragment>
           )}></Route>
           <Route path="/about" component={About} />
